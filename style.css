@@ -1,0 +1,30 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #bdd5ea;
+}
+
+#container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 600px;
+  height: 600px;
+  box-sizing: border-box;
+  border: 2px solid black;
+}
+
+.column,
+.cell {
+  flex: 1;
+  aspect-ratio: 1 / 1;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
