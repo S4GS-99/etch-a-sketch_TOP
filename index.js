@@ -3,7 +3,7 @@ const CONTAINER = document.querySelector('#container');
 const grid = generateGrid(16);
 
 function generateGrid(size) {
-  for (let column = 1; column < size; column++) {
+  for (let column = 1; column <= size; column++) {
     const colElement = document.createElement('div');
     colElement.classList.add(`column`);
     colElement.setAttribute('col-number', `${column}`);
@@ -20,6 +20,3 @@ function generateGrid(size) {
 
   return;
 }
-
-console.log(document.querySelectorAll('.column'));
-console.log(document.querySelectorAll('.cell'));
