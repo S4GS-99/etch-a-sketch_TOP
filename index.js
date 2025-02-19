@@ -1,6 +1,7 @@
 const BODY = document.querySelector('body');
 const CONTAINER = document.querySelector('#container');
 const grid = generateGrid(16);
+addHoverEffect();
 
 function generateGrid(size) {
   for (let column = 1; column <= size; column++) {
@@ -19,4 +20,15 @@ function generateGrid(size) {
   }
 
   return;
+}
+
+function addHoverEffect() {
+  const cells = document.querySelectorAll('.cell');
+
+  // Adds the event listener on every cell
+  // the event is a mouseenter
+  cells.forEach(cell => {
+    // The event adds a class and paints the cell
+    cell.addEventListener('mouseenter', () => cell.classList.add('painted'));
+  });
 }
