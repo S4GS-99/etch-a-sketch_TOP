@@ -1,7 +1,11 @@
 const BODY = document.querySelector('body');
-const CONTAINER = document.querySelector('#container');
+const BUTTONS = document.querySelector('.options');
+const CONTAINER = document.querySelector('.container');
+
+const gridButton = generateButton('Grid Size', 'size-setter');
 const grid = generateGrid(16);
-addHoverEffect();
+
+addEventEffect('.cell', 'mouseenter', 'painted');
 
 function generateGrid(size) {
   for (let column = 1; column <= size; column++) {
@@ -22,13 +26,24 @@ function generateGrid(size) {
   return;
 }
 
-function addHoverEffect() {
-  const cells = document.querySelectorAll('.cell');
+function addEventEffect(targetElement, eventName, className) {
+  // Get a node list of the target elements
+  const elements = document.querySelectorAll(targetElement);
 
-  // Adds the event listener on every cell
-  // the event is a mouseenter
-  cells.forEach(cell => {
-    // The event adds a class and paints the cell
-    cell.addEventListener('mouseenter', () => cell.classList.add('painted'));
+  // Adds the event listener on every element
+  elements.forEach(element => {
+    // The event adds a class to  the cell
+    element.addEventListener(eventName, () => element.classList.add(className));
   });
+}
+
+function generateButton(label, buttonID) {
+  const buttonElement = document.createElement('button');
+  const buttonText = document.createTextNode(`${label}`);
+
+  buttonElement.setAttribute('type', 'button');
+  buttonElement.setAttribute('id', `${buttonID}`);
+  buttonElement.appendChild(buttonText);
+
+  BUTTONS.appendChild(buttonElement);
 }
