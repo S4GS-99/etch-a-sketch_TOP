@@ -5,6 +5,7 @@ const GRID_CONTAINER = document.querySelector('#grid');
 const DefaultGrid = generateGrid();
 const gridButton = generateButton('Grid Size', 'size-setter');
 const clearButton = generateButton('Clear Grid', 'clear');
+const randomButton = generateButton('Random Colors', 'random');
 
 gridButton.addEventListener('click', () => {
   let size = Number(
@@ -21,6 +22,11 @@ gridButton.addEventListener('click', () => {
 });
 
 clearButton.addEventListener('click', clearGrid);
+
+randomButton.addEventListener('click', () => {
+  randomButton.classList.toggle('active');
+  updatePaintingMode();
+});
 
 /**
  * Generates a grid of cells with the specified size
@@ -65,7 +71,10 @@ function emptyGrid() {
 function clearGrid() {
   const cells = document.querySelectorAll('.cell');
 
-  cells.forEach(cell => cell.classList.remove('painted'));
+  cells.forEach(cell => {
+    cell.classList.remove('painted');
+    cell.style.backgroundColor = '';
+  });
 }
 
 /**
@@ -90,18 +99,62 @@ function generateButton(label, buttonID) {
 /**
  * Adds an event listener to selected elements that modifies their classes
  * @param {string} targetElement - CSS selector for the target elements
- * @param {string} eventName - Name of the event to listen for (e.g., 'mouseenter')
- * @param {string} className - Class name to add when the event occurs
+ * @param {string} eventName - Name of the event to listen
  * @returns {void}
  */
-
-function addEventEffect(targetElement, eventName, className) {
+function addEventEffect(targetElement, eventName) {
   // Get a node list of the target elements
   const elements = document.querySelectorAll(targetElement);
 
-  // Adds the event listener on every element
   elements.forEach(element => {
-    // The event adds a class to  the cell
-    element.addEventListener(eventName, () => element.classList.add(className));
+    element.addEventListener(eventName, classicPaint);
   });
+}
+
+/**
+ * Updates the painting mode for all cells based on the state of the random button.
+ * Removes existing event listeners for 'mouseenter' events and adds the appropriate
+ * event listener (classicPaint or randomPaint) depending on whether the random button
+ * is active.
+ */
+function updatePaintingMode() {
+  const cells = document.querySelectorAll('.cell');
+  const isRandom = randomButton.classList.contains('active');
+
+  cells.forEach(cell => {
+    cell.removeEventListener('mouseenter', classicPaint);
+    cell.removeEventListener('mouseenter', randomPaint);
+
+    if (isRandom) {
+      cell.addEventListener('mouseenter', randomPaint);
+    } else {
+      cell.addEventListener('mouseenter', classicPaint);
+    }
+  });
+}
+
+/**
+ * Paints the cell with a fixed color
+ */
+function classicPaint() {
+  this.classList.add('painted');
+}
+
+/**
+ * Paints the cell with a random color
+ */
+function randomPaint() {
+  this.classList.add('painted');
+  this.style.backgroundColor = getRandomColor();
+}
+
+/**
+ * Generates a random RGB color string
+ * @returns {string} RGB color in format 'rgb(r, g, b)'
+ */
+function getRandomColor() {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 256);
+  const b = Math.floor(Math.random() * 256);
+  return `rgb(${r}, ${g}, ${b})`;
 }
