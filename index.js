@@ -37,13 +37,15 @@ function generateGrid(size = 16) {
   // Generate the columns
   for (let column = 1; column <= size; column++) {
     const colElement = document.createElement('div');
-    colElement.classList.add(`column`);
     colElement.setAttribute('col-number', `${column}`);
+    colElement.classList.add(`column`);
     // Generate the cells for every column
     for (let cell = 1; cell <= size; cell++) {
       const cellElement = document.createElement('div');
-      cellElement.classList.add('cell');
       cellElement.setAttribute('cel-number', `${cell}`);
+      cellElement.setAttribute('paint-type', 'none');
+      cellElement.classList.add('cell');
+
       colElement.appendChild(cellElement);
     }
 
@@ -72,7 +74,7 @@ function clearGrid() {
   const cells = document.querySelectorAll('.cell');
 
   cells.forEach(cell => {
-    cell.classList.remove('painted');
+    cell.setAttribute('paint-type', 'none');
     cell.style.backgroundColor = '';
   });
 }
@@ -137,14 +139,15 @@ function updatePaintingMode() {
  * Paints the cell with a fixed color
  */
 function classicPaint() {
-  this.classList.add('painted');
+  this.setAttribute('paint-type', 'classic');
+  this.style.backgroundColor = '';
 }
 
 /**
  * Paints the cell with a random color
  */
 function randomPaint() {
-  this.classList.add('painted');
+  this.setAttribute('paint-type', 'random');
   this.style.backgroundColor = getRandomColor();
 }
 
