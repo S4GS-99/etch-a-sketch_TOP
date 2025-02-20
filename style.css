@@ -120,4 +120,7 @@ button {
   .painted {
     background-color: rgba(0, 0, 0, 0.2);
   }
+  :not(.painted) {
+    transition: background-color 0.5s ease-out;
+  }
 }
