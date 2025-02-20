@@ -2,34 +2,25 @@ const BODY = document.querySelector('body');
 const BUTTONS = document.querySelector('#buttons');
 const GRID_CONTAINER = document.querySelector('#grid');
 
-const gridButton = generateButton('Grid Size', 'size-setter');
 const DefaultGrid = generateGrid();
+const gridButton = generateButton('Grid Size', 'size-setter');
+const clearButton = generateButton('Clear Grid', 'clear');
 
-gridPrompt();
+gridButton.addEventListener('click', () => {
+  let size = Number(
+    window.prompt('What Size would you like for you grid?', 16)
+  );
 
-/**
- * Initiates a prompt after clicking the Grid Size button to set a new grid with a given number
- * @returns {void}
- */
-function gridPrompt() {
-  const btn = document.querySelector('#size-setter');
+  if (size < 16 || size > 100) {
+    return;
+  } else {
+    // Start with an empty grid
+    emptyGrid();
+    generateGrid(size);
+  }
+});
 
-  btn.addEventListener('click', () => {
-    let size = Number(
-      window.prompt('What Size would you like for you grid?', 16)
-    );
-
-    if (size < 16 || size > 100) {
-      return;
-    } else {
-      // Start with an empty grid
-      clearGrid();
-      generateGrid(size);
-    }
-  });
-
-  return;
-}
+clearButton.addEventListener('click', clearGrid);
 
 /**
  * Generates a grid of cells with the specified size
@@ -61,17 +52,27 @@ function generateGrid(size = 16) {
  * Removes all child elements from the grid container
  * @returns {void}
  */
-function clearGrid() {
+function emptyGrid() {
   while (GRID_CONTAINER.firstChild) {
     GRID_CONTAINER.removeChild(GRID_CONTAINER.firstChild);
   }
 }
 
 /**
+ * Clear the painted cells on the grid
+ * @returns {void}
+ */
+function clearGrid() {
+  const cells = document.querySelectorAll('.cell');
+
+  cells.forEach(cell => cell.classList.remove('painted'));
+}
+
+/**
  * Creates and appends a new button element to the buttons container
  * @param {string} label - The text to display on the button
  * @param {string} buttonID - The ID to assign to the button
- * @returns {void}
+ * @returns {node} DOM element created
  */
 function generateButton(label, buttonID) {
   const buttonElement = document.createElement('button');
@@ -82,6 +83,8 @@ function generateButton(label, buttonID) {
   buttonElement.appendChild(buttonText);
 
   BUTTONS.appendChild(buttonElement);
+
+  return document.querySelector(`#${buttonID}`);
 }
 
 /**
