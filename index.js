@@ -26,17 +26,6 @@ function generateGrid(size) {
   return;
 }
 
-function addEventEffect(targetElement, eventName, className) {
-  // Get a node list of the target elements
-  const elements = document.querySelectorAll(targetElement);
-
-  // Adds the event listener on every element
-  elements.forEach(element => {
-    // The event adds a class to  the cell
-    element.addEventListener(eventName, () => element.classList.add(className));
-  });
-}
-
 function generateButton(label, buttonID) {
   const buttonElement = document.createElement('button');
   const buttonText = document.createTextNode(`${label}`);
@@ -46,4 +35,15 @@ function generateButton(label, buttonID) {
   buttonElement.appendChild(buttonText);
 
   BUTTONS.appendChild(buttonElement);
+}
+
+function addEventEffect(targetElement, eventName, className) {
+  // Get a node list of the target elements
+  const elements = document.querySelectorAll(targetElement);
+
+  // Adds the event listener on every element
+  elements.forEach(element => {
+    // The event adds a class to  the cell
+    element.addEventListener(eventName, () => element.classList.add(className));
+  });
 }
