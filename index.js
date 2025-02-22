@@ -85,9 +85,10 @@ function generateSection(sectionID) {
  * Creates and appends a new button element to the buttons container
  * @param {string} label - The text to display on the button
  * @param {string} buttonID - The ID to assign to the button
+ * @param {string} buttonClass - The classes to assign to the button
  * @returns {node} DOM element created
  */
-function generateButton(section, label, buttonID) {
+function generateButton(section, label, buttonID, buttonClass) {
   const buttonElement = document.createElement('button');
   const buttonText = document.createTextNode(`${label}`);
 
@@ -114,14 +115,14 @@ function addDefaultPaint() {
 }
 
 /**
- * Attaches a click event listener to the specified paint button element.
- * When the button is clicked, it toggles the 'painting' class and updates the painting mode.
+ * Attaches a click event listener to the specified paint button.
+ * When the button is clicked, it toggles the button state and updates the painting mode.
  *
- * @param {HTMLElement} typeOfPaint - The paint button element to attach the event listener to.
+ * @param {HTMLElement} typeOfPaint - The paint button element to attach the click event listener to.
  */
 function onPaintButtonClick(typeOfPaint) {
   typeOfPaint.addEventListener('click', () => {
-    typeOfPaint.classList.toggle('painting');
+    toggleButtons(typeOfPaint);
     updatePaintingMode();
   });
 }
@@ -221,4 +222,21 @@ function shadePaint() {
     this.style.backgroundColor = `rgba(0, 0, 0, ${opacity})`;
     this.setAttribute('data-darkness', darkness);
   }
+}
+
+/**
+ * Toggles the 'painting' class on the clicked button and removes it from all other buttons.
+ *
+ * @param {HTMLElement} clicked - The button element that was clicked.
+ */
+function toggleButtons(clicked) {
+  paintButtons.childNodes.forEach(button => {
+    if (clicked === button) {
+      button.classList.toggle('painting');
+
+      console.log(button);
+    } else {
+      button.classList.remove('painting');
+    }
+  });
 }
