@@ -119,6 +119,7 @@ button {
 
   width: 600px;
   height: 600px;
+  background-color: white;
   box-sizing: border-box;
   border: 2px solid black;
 }

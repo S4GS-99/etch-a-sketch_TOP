@@ -47,6 +47,7 @@ function generateGrid(size = 16) {
       const cellElement = document.createElement('div');
       cellElement.setAttribute('cel-number', `${cell}`);
       cellElement.setAttribute('paint-type', 'none');
+      cellElement.setAttribute('data-darkness', 0);
       cellElement.classList.add('cell');
 
       colElement.appendChild(cellElement);
@@ -59,6 +60,13 @@ function generateGrid(size = 16) {
   return size;
 }
 
+/**
+ * Generates a section element with the specified ID and appends it to the DOM.
+ * The section element will have the classes 'buttons' and 'container'.
+ *
+ * @param {string} sectionID - The ID to be assigned to the generated section element.
+ * @returns {HTMLElement} The newly created section element.
+ */
 function generateSection(sectionID) {
   const sectionElement = document.createElement('div');
   sectionElement.setAttribute('id', `${sectionID}`);
@@ -137,6 +145,7 @@ function clearGrid() {
 
   cells.forEach(cell => {
     cell.setAttribute('paint-type', 'none');
+    cell.setAttribute('data-darkness', 0);
     cell.style.backgroundColor = '';
   });
 }
@@ -157,6 +166,7 @@ function getRandomColor() {
  * Removes existing event listeners for 'mouseenter' events and adds the appropriate
  * event listener (classicPaint or randomPaint) depending on whether the random button
  * is active.
+ * @returns {void}
  */
 function updatePaintingMode() {
   const cells = document.querySelectorAll('.cell');
@@ -180,17 +190,35 @@ function updatePaintingMode() {
 
 /**
  * Paints the cell with a fixed color
+ * @returns {void}
  */
 function classicPaint() {
   this.setAttribute('paint-type', 'classic');
+  this.setAttribute('data-darkness', 10);
   this.style.backgroundColor = '';
 }
 
 /**
  * Paints the cell with a random color
+ * @returns {void}
  */
 function randomPaint() {
   this.setAttribute('paint-type', 'random');
   this.style.backgroundColor = getRandomColor();
 }
-function shadePaint() {}
+
+/**
+ * Paints the cell with a progressively darker shade
+ * @returns {void}
+ */
+function shadePaint() {
+  this.setAttribute('paint-type', 'shade');
+  let darkness = parseInt(this.getAttribute('data-darkness')) || 0;
+
+  if (darkness <= 10) {
+    darkness++;
+    const opacity = darkness * 0.1; // Increases opacity by 0.1 each time
+    this.style.backgroundColor = `rgba(0, 0, 0, ${opacity})`;
+    this.setAttribute('data-darkness', darkness);
+  }
+}
