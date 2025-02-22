@@ -2,7 +2,7 @@ const BODY = document.querySelector('body');
 const BUTTONS = document.querySelector('#buttons');
 const GRID_CONTAINER = document.querySelector('#grid');
 
-const DefaultGrid = generateGrid();
+const grid = generateGrid();
 const gridButton = generateButton('Grid Size', 'size-setter');
 const clearButton = generateButton('Clear Grid', 'clear');
 const randomButton = generateButton('Random Colors', 'random');
@@ -31,7 +31,7 @@ clearButton.addEventListener('click', clearGrid);
 /**
  * Generates a grid of cells with the specified size
  * @param {number} [size=16] - The size of the grid (size x size)
- * @returns {void}
+ * @returns {number} The size of the generated grid.
  */
 function generateGrid(size = 16) {
   // Generate the columns
@@ -53,7 +53,7 @@ function generateGrid(size = 16) {
   }
 
   addDefaultPaint();
-  return;
+  return size;
 }
 
 /**
