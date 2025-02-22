@@ -1,12 +1,15 @@
 const BODY = document.querySelector('body');
-const BUTTONS = document.querySelector('#buttons');
+const MAIN = document.querySelector('main');
+const GRID_PARENT = document.querySelector('#grid-parent');
 const GRID_CONTAINER = document.querySelector('#grid');
 
+const gridButtons = generateSection('grid-buttons');
 const grid = generateGrid();
-const gridButton = generateButton('Grid Size', 'size-setter');
-const clearButton = generateButton('Clear Grid', 'clear');
-const randomButton = generateButton('Random Colors', 'random');
-const shadeButton = generateButton('Shade', 'shade');
+const paintButtons = generateSection('paint-buttons');
+const gridButton = generateButton(gridButtons, 'Grid Size', 'size-setter');
+const clearButton = generateButton(gridButtons, 'Clear Grid', 'clear');
+const randomButton = generateButton(paintButtons, 'Random Colors', 'random');
+const shadeButton = generateButton(paintButtons, 'Shade', 'shade');
 
 // Toggling paint buttons class
 onPaintButtonClick(randomButton);
@@ -56,13 +59,27 @@ function generateGrid(size = 16) {
   return size;
 }
 
+function generateSection(sectionID) {
+  const sectionElement = document.createElement('div');
+  sectionElement.setAttribute('id', `${sectionID}`);
+  sectionElement.classList.add('buttons', 'container');
+
+  if (sectionID === 'grid-buttons') {
+    MAIN.insertBefore(sectionElement, GRID_PARENT);
+  } else if (sectionID === 'paint-buttons') {
+    MAIN.appendChild(sectionElement);
+  }
+
+  return document.querySelector(`#${sectionID}`);
+}
+
 /**
  * Creates and appends a new button element to the buttons container
  * @param {string} label - The text to display on the button
  * @param {string} buttonID - The ID to assign to the button
  * @returns {node} DOM element created
  */
-function generateButton(label, buttonID) {
+function generateButton(section, label, buttonID) {
   const buttonElement = document.createElement('button');
   const buttonText = document.createTextNode(`${label}`);
 
@@ -70,7 +87,7 @@ function generateButton(label, buttonID) {
   buttonElement.setAttribute('id', `${buttonID}`);
   buttonElement.appendChild(buttonText);
 
-  BUTTONS.appendChild(buttonElement);
+  section.appendChild(buttonElement);
 
   return document.querySelector(`#${buttonID}`);
 }

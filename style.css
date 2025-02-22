@@ -45,7 +45,7 @@ body {
 
   main {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: column wrap;
     justify-content: space-between;
 
     margin: 1.5em;
@@ -56,19 +56,17 @@ h1 {
   font-size: var(--xl-text);
 }
 
-#buttons {
+.buttons {
   display: flex;
   justify-content: center;
-  /* align-items: center; */
   gap: 1em;
-  flex: 1 1 var(--sm-w);
+  margin: 1em 0;
 }
 
 button {
   height: fit-content;
   font-family: inherit;
   padding: 0.6em 1.3em;
-  margin-bottom: 1em;
   font-size: var(--lg-text);
   border: 3px solid black;
   border-radius: 0.4em;
@@ -108,7 +106,7 @@ button {
   }
 }
 
-#parent {
+#grid-parent {
   display: flex;
   justify-content: center;
 
