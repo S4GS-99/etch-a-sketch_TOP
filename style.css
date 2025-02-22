@@ -76,19 +76,29 @@ button {
   cursor: pointer;
   letter-spacing: 1.25px;
 
+  &.painting {
+    background-color: #4caf50;
+    transition: background-color 0.05s ease-out;
+  }
+
   &:hover {
     transform: translate(-0.05em, -0.05em);
-    box-shadow: 0.15em 0.15em;
+    box-shadow: 0.15em 0.15em black;
   }
 
   &:active {
     transform: translate(0.05em, 0.05em);
-    box-shadow: 0.05em 0.05em;
+    box-shadow: 0.05em 0.05em black;
   }
 }
 
 #size-setter {
   background: #fbca1f;
+}
+
+#clear {
+  background-color: #c92027;
+  color: white;
 }
 
 #random {
@@ -125,16 +135,16 @@ button {
 .cell {
   background-color: white;
   border: 0.125px solid rgba(255, 255, 255, 0.5);
+  transition: background-color 0.125s ease-out;
 
   &[paint-type='none'] {
     background-color: white;
     border: 0.125px solid rgba(80, 80, 80, 0.5);
-    transition: background-color 0.5s ease-out;
+    transition: background-color 0.5s ease-in-out;
   }
 
   &[paint-type='classic'] {
     background-color: rgb(0, 0, 0);
-    transition: background-color 0.125s ease-out;
   }
 
   &[paint-type='random'] {

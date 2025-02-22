@@ -6,6 +6,11 @@ const DefaultGrid = generateGrid();
 const gridButton = generateButton('Grid Size', 'size-setter');
 const clearButton = generateButton('Clear Grid', 'clear');
 const randomButton = generateButton('Random Colors', 'random');
+const shadeButton = generateButton('Shade', 'shade');
+
+// Toggling paint buttons class
+onPaintButtonClick(randomButton);
+onPaintButtonClick(shadeButton);
 
 gridButton.addEventListener('click', () => {
   let size = Number(
@@ -22,11 +27,6 @@ gridButton.addEventListener('click', () => {
 });
 
 clearButton.addEventListener('click', clearGrid);
-
-randomButton.addEventListener('click', () => {
-  randomButton.classList.toggle('active');
-  updatePaintingMode();
-});
 
 /**
  * Generates a grid of cells with the specified size
@@ -52,8 +52,53 @@ function generateGrid(size = 16) {
     GRID_CONTAINER.appendChild(colElement);
   }
 
-  addEventEffect('.cell', 'mouseenter', 'painted');
+  addDefaultPaint();
   return;
+}
+
+/**
+ * Creates and appends a new button element to the buttons container
+ * @param {string} label - The text to display on the button
+ * @param {string} buttonID - The ID to assign to the button
+ * @returns {node} DOM element created
+ */
+function generateButton(label, buttonID) {
+  const buttonElement = document.createElement('button');
+  const buttonText = document.createTextNode(`${label}`);
+
+  buttonElement.setAttribute('type', 'button');
+  buttonElement.setAttribute('id', `${buttonID}`);
+  buttonElement.appendChild(buttonText);
+
+  BUTTONS.appendChild(buttonElement);
+
+  return document.querySelector(`#${buttonID}`);
+}
+
+/**
+ * Adds an event listener to selected elements that modifies their classes
+ * @returns {void}
+ */
+function addDefaultPaint() {
+  // Get a node list of the target elements
+  const elements = document.querySelectorAll('.cell');
+
+  elements.forEach(element => {
+    element.addEventListener('mouseenter', classicPaint);
+  });
+}
+
+/**
+ * Attaches a click event listener to the specified paint button element.
+ * When the button is clicked, it toggles the 'painting' class and updates the painting mode.
+ *
+ * @param {HTMLElement} typeOfPaint - The paint button element to attach the event listener to.
+ */
+function onPaintButtonClick(typeOfPaint) {
+  typeOfPaint.addEventListener('click', () => {
+    typeOfPaint.classList.toggle('painting');
+    updatePaintingMode();
+  });
 }
 
 /**
@@ -80,37 +125,14 @@ function clearGrid() {
 }
 
 /**
- * Creates and appends a new button element to the buttons container
- * @param {string} label - The text to display on the button
- * @param {string} buttonID - The ID to assign to the button
- * @returns {node} DOM element created
+ * Generates a random RGB color string
+ * @returns {string} RGB color in format 'rgb(r, g, b)'
  */
-function generateButton(label, buttonID) {
-  const buttonElement = document.createElement('button');
-  const buttonText = document.createTextNode(`${label}`);
-
-  buttonElement.setAttribute('type', 'button');
-  buttonElement.setAttribute('id', `${buttonID}`);
-  buttonElement.appendChild(buttonText);
-
-  BUTTONS.appendChild(buttonElement);
-
-  return document.querySelector(`#${buttonID}`);
-}
-
-/**
- * Adds an event listener to selected elements that modifies their classes
- * @param {string} targetElement - CSS selector for the target elements
- * @param {string} eventName - Name of the event to listen
- * @returns {void}
- */
-function addEventEffect(targetElement, eventName) {
-  // Get a node list of the target elements
-  const elements = document.querySelectorAll(targetElement);
-
-  elements.forEach(element => {
-    element.addEventListener(eventName, classicPaint);
-  });
+function getRandomColor() {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 256);
+  const b = Math.floor(Math.random() * 256);
+  return `rgb(${r}, ${g}, ${b})`;
 }
 
 /**
@@ -121,14 +143,18 @@ function addEventEffect(targetElement, eventName) {
  */
 function updatePaintingMode() {
   const cells = document.querySelectorAll('.cell');
-  const isRandom = randomButton.classList.contains('active');
+  const isRandom = randomButton.classList.contains('painting');
+  const isShade = shadeButton.classList.contains('painting');
 
   cells.forEach(cell => {
     cell.removeEventListener('mouseenter', classicPaint);
     cell.removeEventListener('mouseenter', randomPaint);
+    cell.removeEventListener('mouseenter', shadePaint);
 
     if (isRandom) {
       cell.addEventListener('mouseenter', randomPaint);
+    } else if (isShade) {
+      cell.addEventListener('mouseenter', shadePaint);
     } else {
       cell.addEventListener('mouseenter', classicPaint);
     }
@@ -150,14 +176,4 @@ function randomPaint() {
   this.setAttribute('paint-type', 'random');
   this.style.backgroundColor = getRandomColor();
 }
-
-/**
- * Generates a random RGB color string
- * @returns {string} RGB color in format 'rgb(r, g, b)'
- */
-function getRandomColor() {
-  const r = Math.floor(Math.random() * 256);
-  const g = Math.floor(Math.random() * 256);
-  const b = Math.floor(Math.random() * 256);
-  return `rgb(${r}, ${g}, ${b})`;
-}
+function shadePaint() {}
