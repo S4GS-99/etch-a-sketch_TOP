@@ -45,7 +45,7 @@ body {
 
   main {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: column wrap;
     justify-content: space-between;
 
     margin: 1.5em;
@@ -56,19 +56,17 @@ h1 {
   font-size: var(--xl-text);
 }
 
-#buttons {
+.buttons {
   display: flex;
   justify-content: center;
-  /* align-items: center; */
   gap: 1em;
-  flex: 1 1 var(--sm-w);
+  margin: 1em 0;
 }
 
 button {
   height: fit-content;
   font-family: inherit;
   padding: 0.6em 1.3em;
-  margin-bottom: 1em;
   font-size: var(--lg-text);
   border: 3px solid black;
   border-radius: 0.4em;
@@ -76,19 +74,29 @@ button {
   cursor: pointer;
   letter-spacing: 1.25px;
 
+  &.painting {
+    background-color: #4caf50;
+    transition: background-color 0.05s ease-out;
+  }
+
   &:hover {
     transform: translate(-0.05em, -0.05em);
-    box-shadow: 0.15em 0.15em;
+    box-shadow: 0.15em 0.15em black;
   }
 
   &:active {
     transform: translate(0.05em, 0.05em);
-    box-shadow: 0.05em 0.05em;
+    box-shadow: 0.05em 0.05em black;
   }
 }
 
 #size-setter {
   background: #fbca1f;
+}
+
+#clear {
+  background-color: #c92027;
+  color: white;
 }
 
 #random {
@@ -98,7 +106,7 @@ button {
   }
 }
 
-#parent {
+#grid-parent {
   display: flex;
   justify-content: center;
 
@@ -111,6 +119,7 @@ button {
 
   width: 600px;
   height: 600px;
+  background-color: white;
   box-sizing: border-box;
   border: 2px solid black;
 }
@@ -120,15 +129,24 @@ button {
   display: flex;
   flex: 1 1 auto;
   flex-flow: column wrap;
+}
 
-  aspect-ratio: 1 / 1;
+.cell {
   background-color: white;
-  border: 0.5px dashed rgba(0, 0, 0, 0.2);
+  border: 0.125px solid rgba(255, 255, 255, 0.5);
+  transition: background-color 0.125s ease-out;
 
-  .painted {
-    background-color: rgba(0, 0, 0, 0.2);
+  &[paint-type='none'] {
+    background-color: white;
+    border: 0.125px solid rgba(80, 80, 80, 0.5);
+    transition: background-color 0.5s ease-in-out;
   }
-  :not(.painted) {
-    transition: background-color 0.5s ease-out;
+
+  &[paint-type='classic'] {
+    background-color: rgb(0, 0, 0);
+  }
+
+  &[paint-type='random'] {
+    border: 0.125px solid rgba(80, 80, 80, 0.5);
   }
 }
