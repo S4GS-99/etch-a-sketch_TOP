@@ -11,6 +11,8 @@ const clearButton = generateButton(gridButtons, 'Clear Grid', 'clear');
 const randomButton = generateButton(paintButtons, 'Random Colors', 'random');
 const shadeButton = generateButton(paintButtons, 'Shade', 'shade');
 
+let isMouseDown = false;
+
 // Toggling paint buttons class
 onPaintButtonClick(randomButton);
 onPaintButtonClick(shadeButton);
@@ -28,8 +30,15 @@ gridButton.addEventListener('click', () => {
     generateGrid(size);
   }
 });
-
 clearButton.addEventListener('click', clearGrid);
+// Prevents text selection while drawing
+MAIN.addEventListener('mousedown', e => {
+  e.preventDefault();
+});
+
+// This allows to paint by holding a mouse button and not just hovering over the cells
+document.addEventListener('pointerdown', () => (isMouseDown = true));
+document.addEventListener('pointerup', () => (isMouseDown = false));
 
 /**
  * Generates a grid of cells with the specified size
@@ -101,16 +110,38 @@ function generateButton(section, label, buttonID, buttonClass) {
   return document.querySelector(`#${buttonID}`);
 }
 
+function addPointerDownListener(cell, callback) {
+  cell.addEventListener('pointerdown', e => {
+    e.preventDefault(); // Prevents dragging behaviour
+    isMouseDown = true;
+
+    // Check if it's shade paint to handle progressive darkening
+    if (
+      callback === shadePaint &&
+      e.target.getAttribute('paint-type') === 'shade'
+    ) {
+      const currentDarkness =
+        parseInt(e.target.getAttribute('data-darkness')) || 0;
+      if (currentDarkness < 10) {
+        callback.call(e.target);
+      }
+    } else {
+      callback.call(e.target);
+    }
+  });
+}
+
 /**
  * Adds an event listener to selected elements that modifies their classes
  * @returns {void}
  */
 function addDefaultPaint() {
   // Get a node list of the target elements
-  const elements = document.querySelectorAll('.cell');
+  const cells = document.querySelectorAll('.cell');
 
-  elements.forEach(element => {
-    element.addEventListener('mouseenter', classicPaint);
+  cells.forEach(cell => {
+    cell.addEventListener('mouseenter', classicPaint);
+    addPointerDownListener(cell, classicPaint);
   });
 }
 
@@ -175,16 +206,20 @@ function updatePaintingMode() {
   const isShade = shadeButton.classList.contains('painting');
 
   cells.forEach(cell => {
-    cell.removeEventListener('mouseenter', classicPaint);
-    cell.removeEventListener('mouseenter', randomPaint);
-    cell.removeEventListener('mouseenter', shadePaint);
+    // Remove all existing event listeners by cloning the cell
+    const newCell = cell.cloneNode(true);
+    cell.parentNode.replaceChild(newCell, cell);
 
+    // Add new listeners based on paint mode
     if (isRandom) {
-      cell.addEventListener('mouseenter', randomPaint);
+      newCell.addEventListener('mouseenter', randomPaint);
+      addPointerDownListener(newCell, randomPaint);
     } else if (isShade) {
-      cell.addEventListener('mouseenter', shadePaint);
+      newCell.addEventListener('mouseenter', shadePaint);
+      addPointerDownListener(newCell, shadePaint);
     } else {
-      cell.addEventListener('mouseenter', classicPaint);
+      newCell.addEventListener('mouseenter', classicPaint);
+      addPointerDownListener(newCell, classicPaint);
     }
   });
 }
@@ -194,18 +229,43 @@ function updatePaintingMode() {
  * @returns {void}
  */
 function classicPaint() {
+  if (!isMouseDown) return;
+
   this.setAttribute('paint-type', 'classic');
   this.setAttribute('data-darkness', 10);
-  this.style.backgroundColor = '';
+  this.style.backgroundColor = 'rgba(0, 0, 0, 1)';
+
+  return this.style;
 }
+
+// function classicPaint() {
+//   if (!isMouseDown) return;
+
+//   const darknessLevel = this.getAttribute('data-darkness');
+
+//   if (darknessLevel === 0) {
+//     this.setAttribute('paint-type', 'classic');
+//     this.style.backgroundColor = 'rgba(0, 0, 0, 1)';
+//     this.setAttribute('data-darkness', 10);
+//   } else {
+//     this.setAttribute('paint-type', 'classic');
+//     this.style.backgroundColor = 'rgba(0, 0, 0, 1)';
+//   }
+
+//   return this.style;
+// }
 
 /**
  * Paints the cell with a random color
  * @returns {void}
  */
 function randomPaint() {
+  if (!isMouseDown) return;
+
   this.setAttribute('paint-type', 'random');
   this.style.backgroundColor = getRandomColor();
+
+  return this.style;
 }
 
 /**
@@ -213,15 +273,19 @@ function randomPaint() {
  * @returns {void}
  */
 function shadePaint() {
+  if (!isMouseDown) return;
+
   this.setAttribute('paint-type', 'shade');
   let darkness = parseInt(this.getAttribute('data-darkness')) || 0;
 
-  if (darkness <= 10) {
+  if (darkness < 10) {
     darkness++;
     const opacity = darkness * 0.1; // Increases opacity by 0.1 each time
-    this.style.backgroundColor = `rgba(0, 0, 0, ${opacity})`;
     this.setAttribute('data-darkness', darkness);
+    this.style.backgroundColor = `rgba(0, 0, 0, ${opacity})`;
   }
+
+  return this.style;
 }
 
 /**
@@ -233,8 +297,6 @@ function toggleButtons(clicked) {
   paintButtons.childNodes.forEach(button => {
     if (clicked === button) {
       button.classList.toggle('painting');
-
-      console.log(button);
     } else {
       button.classList.remove('painting');
     }
