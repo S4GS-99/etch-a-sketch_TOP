@@ -16,6 +16,9 @@ html,
   --lg-w: 769px;
   --xl-w: 1024px;
   --full-w: 100%;
+
+  height: 100%;
+  margin: 0;
 }
 
 * {
@@ -30,7 +33,9 @@ html,
 }
 
 body {
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   background-color: #bdd5ea;
 
   header {
@@ -47,7 +52,7 @@ body {
     display: flex;
     flex-flow: column wrap;
     justify-content: space-between;
-
+    flex: 1;
     margin: 1.5em;
   }
 }
@@ -109,6 +114,7 @@ button {
 #grid-parent {
   display: flex;
   justify-content: center;
+  align-items: center;
 
   flex: 2 2 var(--md-w);
 }
